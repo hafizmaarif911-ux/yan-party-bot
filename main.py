@@ -1,3 +1,4 @@
+import os
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -13,10 +14,6 @@ bot = commands.Bot(
     intents=intents
 )
 
-# =========================
-# PING COMMAND
-# =========================
-
 @bot.tree.command(
     name="ping",
     description="Test bot"
@@ -26,10 +23,6 @@ async def ping(interaction: discord.Interaction):
         "🏹 Albion Party Bot Online!"
     )
 
-# =========================
-# PARTY COMMAND
-# =========================
-
 @bot.tree.command(
     name="party",
     description="Create Party"
@@ -38,7 +31,7 @@ async def party(interaction: discord.Interaction):
 
     embed = discord.Embed(
         title="📢 AVA NEW ROUTE",
-        description="Leader: " + interaction.user.mention,
+        description=f"Leader: {interaction.user.mention}",
         color=0x5865F2
     )
 
@@ -64,10 +57,6 @@ async def party(interaction: discord.Interaction):
         embed=embed
     )
 
-# =========================
-# READY
-# =========================
-
 @bot.event
 async def on_ready():
 
@@ -77,7 +66,7 @@ async def on_ready():
         synced = await bot.tree.sync()
         print(f"Synced {len(synced)} command(s)")
     except Exception as e:
-        print(e)
+        print(f"Sync Error: {e}")
 
     print(f"Online : {bot.user}")
 
