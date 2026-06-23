@@ -142,8 +142,6 @@ class JoinButton(discord.ui.Button):
 # =====================================
 
 class PartyView(discord.ui.View):
-
-```
 def __init__(self, content_id):
 
     super().__init__(timeout=None)
