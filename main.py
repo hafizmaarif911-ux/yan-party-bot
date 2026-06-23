@@ -184,31 +184,40 @@ class PartyView(discord.ui.View):
 
         async def leave_callback(interaction):
 
-            user_id = interaction.user.id
+    if content_id not in parties:
+        return await interaction.response.send_message(
+            "❌ Content sudah selesai.",
+            ephemeral=True
+        )
 
-            for role in data["roles"]:
-                if data["members"][role] == user_id:
-                    data["members"][role] = None
+    user_id = interaction.user.id
 
-            await interaction.message.edit(
-                embed=build_embed(content_id),
-                view=PartyView(content_id)
-            )
-thread = interaction.guild.get_thread(
-    data["thread_id"]
-)
+    for role in data["roles"]:
 
-if thread:
+        if data["members"][role] == user_id:
+            data["members"][role] = None
 
-    await thread.send(
-        f"❌ <@{user_id}> keluar dari party"
+    await interaction.message.edit(
+        embed=build_embed(content_id),
+        view=PartyView(content_id)
     )
-            await interaction.response.send_message(
-                "Keluar dari party.",
-                ephemeral=True
+
+    thread_id = data.get("thread_id")
+
+    if thread_id:
+
+        thread = interaction.guild.get_thread(thread_id)
+
+        if thread:
+
+            await thread.send(
+                f"❌ <@{user_id}> keluar dari party"
             )
 
-        leave.callback = leave_callback
+    await interaction.response.send_message(
+        "Keluar dari party.",
+        ephemeral=True
+    )
 
         # =========================
         # MASSING
