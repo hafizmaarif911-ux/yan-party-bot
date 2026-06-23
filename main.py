@@ -126,11 +126,13 @@ class PartyView(discord.ui.View):
 
         data = parties[content_id]
 
+        # BUTTON ROLE
         for role in data["roles"]:
             self.add_item(
                 JoinButton(content_id, role)
             )
 
+        # BUTTONS
         leave = discord.ui.Button(
             label="Leave",
             style=discord.ButtonStyle.secondary
@@ -138,27 +140,29 @@ class PartyView(discord.ui.View):
 
         massing = discord.ui.Button(
             label="Massing",
-            style=discord.ButtonStyle.success
+            style=discord.ButtonStyle.primary
         )
-        
+
         finish = discord.ui.Button(
             label="Finish",
             style=discord.ButtonStyle.success
         )
-        
+
         cancel = discord.ui.Button(
             label="Cancel",
             style=discord.ButtonStyle.danger
         )
 
+        # =========================
         # LEAVE
+        # =========================
 
         async def leave_callback(interaction):
 
-            user = interaction.user.id
+            user_id = interaction.user.id
 
             for role in data["roles"]:
-                if data["members"][role] == user:
+                if data["members"][role] == user_id:
                     data["members"][role] = None
 
             await interaction.message.edit(
@@ -173,78 +177,94 @@ class PartyView(discord.ui.View):
 
         leave.callback = leave_callback
 
-    # MASSING
+        # =========================
+        # MASSING
+        # =========================
 
-async def massing_callback(interaction):
+        async def massing_callback(interaction):
 
-    if interaction.user.id != data["leader"]:
-        return await interaction.response.send_message(
-            "Hanya leader.",
-            ephemeral=True
-        )
+            if interaction.user.id != data["leader"]:
+                return await interaction.response.send_message(
+                    "Hanya leader.",
+                    ephemeral=True
+                )
 
-    mentions = []
+            mentions = []
 
-    for role in data["roles"]:
+            for role in data["roles"]:
 
-        member = data["members"][role]
+                member = data["members"][role]
 
-        if member:
-            mentions.append(f"<@{member}>")
+                if member:
+                    mentions.append(f"<@{member}>")
 
-    await interaction.channel.send(
-        "🔔 MASSING NOW!\n\n" +
-        "\n".join(mentions)
-    )
+            message = (
+                f"📢 MASSING NOW!\n"
+                f"Caller: <@{data['leader']}>\n\n"
+                + "\n".join(mentions)
+                + "\n\nSilakan login dan bersiap!"
+            )
 
-    await interaction.response.defer()
+            await interaction.channel.send(message)
 
-massing.callback = massing_callback
+            await interaction.response.send_message(
+                "Massing berhasil dikirim.",
+                ephemeral=True
+            )
 
+        massing.callback = massing_callback
 
-# FINISH
+        # =========================
+        # FINISH
+        # =========================
 
-async def finish_callback(interaction):
+        async def finish_callback(interaction):
 
-    if interaction.user.id != data["leader"]:
-        return await interaction.response.send_message(
-            "Hanya leader yang bisa finish content.",
-            ephemeral=True
-        )
+            if interaction.user.id != data["leader"]:
+                return await interaction.response.send_message(
+                    "Hanya leader yang bisa finish content.",
+                    ephemeral=True
+                )
 
-    await interaction.response.send_modal(
-        FinishModal(content_id)
-    )
+            await interaction.response.send_modal(
+                FinishModal(content_id)
+            )
 
-finish.callback = finish_callback
+        finish.callback = finish_callback
 
+        # =========================
+        # CANCEL
+        # =========================
 
-# CANCEL
+        async def cancel_callback(interaction):
 
-async def cancel_callback(interaction):
+            if interaction.user.id != data["leader"]:
+                return await interaction.response.send_message(
+                    "Hanya leader.",
+                    ephemeral=True
+                )
 
-    if interaction.user.id != data["leader"]:
-        return await interaction.response.send_message(
-            "Hanya leader.",
-            ephemeral=True
-        )
+            del parties[content_id]
 
-    del parties[content_id]
+            await interaction.message.edit(
+                content="❌ Content dibatalkan",
+                embed=None,
+                view=None
+            )
 
-    await interaction.message.edit(
-        content="❌ Content dibatalkan",
-        embed=None,
-        view=None
-    )
+            await interaction.response.send_message(
+                "Content dibatalkan.",
+                ephemeral=True
+            )
 
-    await interaction.response.defer()
+        cancel.callback = cancel_callback
 
-cancel.callback = cancel_callback
+        # ADD BUTTONS
 
-self.add_item(leave)
-self.add_item(massing)
-self.add_item(finish)
-self.add_item(cancel)
+        self.add_item(leave)
+        self.add_item(massing)
+        self.add_item(finish)
+        self.add_item(cancel)
 		
 
 
