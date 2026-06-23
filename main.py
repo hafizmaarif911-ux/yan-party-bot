@@ -117,15 +117,6 @@ class JoinButton(discord.ui.Button):
         )
 
         # kirim DM ke yang join
-        try:
-
-            await interaction.user.send(
-                f"✅ Kamu berhasil join role **{self.role_name}** pada content **{data['name']}**"
-            )
-
-        except:
-
-            pass
 
         await interaction.response.send_message(
             f"✅ Masuk ke {self.role_name}",
