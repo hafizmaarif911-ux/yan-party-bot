@@ -288,7 +288,7 @@ async def content(interaction: discord.Interaction):
 async def ping(interaction: discord.Interaction):
 
     await interaction.response.send_message(
-        "🏹 Albion Party Bot Online!"
+        "🏹 YANTO GANTENG BANGET!"
     )
 
 
