@@ -3,6 +3,13 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
+from database import (
+    init_db,
+    get_history,
+    get_stats,
+    get_top_attendance
+)
+
 load_dotenv()
 
 TOKEN = os.getenv("TOKEN")
@@ -291,7 +298,104 @@ async def ping(interaction: discord.Interaction):
         "🏹 YANTO GANTENG BANGET!"
     )
 
+@bot.tree.command(
+    name="history",
+    description="Lihat history content"
+)
+async def history(interaction: discord.Interaction):
 
+    rows = await get_history()
+
+    if not rows:
+        return await interaction.response.send_message(
+            "Belum ada history.",
+            ephemeral=True
+        )
+
+    embed = discord.Embed(
+        title="📜 Content History",
+        color=0x2ecc71
+    )
+
+    for row in rows:
+
+        embed.add_field(
+            name=f"#{row[0]} - {row[1]}",
+            value=(
+                f"👥 {row[4]} Member\n"
+                f"💰 {row[7]:,} Silver"
+            ),
+            inline=False
+        )
+
+    await interaction.response.send_message(
+        embed=embed
+    )
+
+@bot.tree.command(
+    name="stats",
+    description="Guild Stats"
+)
+async def stats(interaction: discord.Interaction):
+
+    data = await get_stats()
+
+    total_content = data[0]
+    total_loot = data[1]
+    total_silver = data[2]
+    total_item = data[3]
+
+    top = await get_top_attendance()
+
+    embed = discord.Embed(
+        title="📊 Guild Stats",
+        color=0xf1c40f
+    )
+
+    embed.add_field(
+        name="Total Content",
+        value=f"{total_content}",
+        inline=False
+    )
+
+    embed.add_field(
+        name="Silver Bag",
+        value=f"{total_silver:,}",
+        inline=False
+    )
+
+    embed.add_field(
+        name="Item Value",
+        value=f"{total_item:,}",
+        inline=False
+    )
+
+    embed.add_field(
+        name="Total Loot",
+        value=f"{total_loot:,}",
+        inline=False
+    )
+
+    if top:
+
+        ranking = ""
+
+        for i, row in enumerate(top, start=1):
+
+            ranking += (
+                f"{i}. {row[0]} "
+                f"({row[1]})\n"
+            )
+
+        embed.add_field(
+            name="🏆 Attendance",
+            value=ranking,
+            inline=False
+        )
+
+    await interaction.response.send_message(
+        embed=embed
+    )
 # =====================================
 # READY
 # =====================================
@@ -300,6 +404,8 @@ async def ping(interaction: discord.Interaction):
 async def on_ready():
 
     print("Bot Login")
+
+    await init_db()
 
     synced = await bot.tree.sync()
 
