@@ -250,8 +250,6 @@ message = (
     f"{' '.join(mentions)}\n\n"
     f"Gear up, mount up, let's move!"
 )
-            )
-
             thread_id = data.get("thread_id")
 
             if thread_id:
