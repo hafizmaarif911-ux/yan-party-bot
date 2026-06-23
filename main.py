@@ -17,6 +17,7 @@ load_dotenv()
 TOKEN = os.getenv("TOKEN")
 ALLOWED_CHANNELS = [
     1440319464800391310,
+	1498327389393129664
 ]
 
 intents = discord.Intents.default()
