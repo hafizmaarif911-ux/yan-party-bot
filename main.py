@@ -658,7 +658,11 @@ async def stats(interaction: discord.Interaction):
 @bot.event
 async def on_ready():
 
+    print("=" * 40)
     print("Bot Login")
+    print(f"Online : {bot.user}")
+    print(f"Servers : {len(bot.guilds)}")
+    print("=" * 40)
 
     await init_db()
 
@@ -667,9 +671,8 @@ async def on_ready():
     print(f"Synced {len(synced)} commands")
 
     for cmd in synced:
-        print(cmd.name)
+        print(f"• /{cmd.name}")
 
-    print(f"Online : {bot.user}")
-
+    print("=" * 40)
 
 bot.run(TOKEN)
