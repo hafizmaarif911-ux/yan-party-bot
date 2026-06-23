@@ -473,9 +473,7 @@ class ContentModal(discord.ui.Modal):
         self.add_item(self.content_name)
         self.add_item(self.roles)
 
-async def on_submit(self, interaction):
-
-    try:
+    async def on_submit(self, interaction):
 
         content_id = len(parties) + 1
 
@@ -501,41 +499,14 @@ async def on_submit(self, interaction):
             view=PartyView(content_id)
         )
 
-        try:
+        thread = await msg.create_thread(
+            name=self.content_name.value
+        )
 
-            thread = await msg.create_thread(
-                name=self.content_name.value
-            )
-
-            parties[content_id]["thread_id"] = thread.id
-
-            await interaction.response.send_message(
-                f"✅ Content dibuat: {thread.mention}",
-                ephemeral=True
-            )
-
-        except discord.Forbidden:
-
-            await interaction.response.send_message(
-                "⚠️ Content berhasil dibuat, tetapi bot tidak memiliki izin membuat thread.",
-                ephemeral=True
-            )
-
-        except Exception as e:
-
-            print(f"THREAD ERROR: {e}")
-
-            await interaction.response.send_message(
-                "⚠️ Content berhasil dibuat, tetapi thread gagal dibuat.",
-                ephemeral=True
-            )
-
-    except Exception as e:
-
-        print(f"CONTENT ERROR: {e}")
+        parties[content_id]["thread_id"] = thread.id
 
         await interaction.response.send_message(
-            f"❌ Error: {e}",
+            f"✅ Content dibuat: {thread.mention}",
             ephemeral=True
         )
 # =====================================
