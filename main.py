@@ -421,21 +421,20 @@ class FinishModal(discord.ui.Modal):
             value=f"{split_value:,}",
             inline=False
         )
-
         await interaction.response.send_message(
-    embed=embed
-)
+            embed=embed
+        )
 
-thread_id = data.get("thread_id")
+        thread_id = data.get("thread_id")
 
-if thread_id:
+        if thread_id:
 
-    thread = interaction.guild.get_thread(thread_id)
+            thread = interaction.guild.get_thread(thread_id)
 
-    if thread:
+            if thread:
 
-        await thread.send(
-            f"""
+                await thread.send(
+                    f"""
 ✅ CONTENT FINISHED
 
 💰 Silver Bag : {silver_bag:,}
@@ -443,10 +442,7 @@ if thread_id:
 💎 Total Loot : {total_loot:,}
 👥 Split : {split_value:,}
 """
-        )
-
-del parties[self.content_id]
-        )
+                )
 
         del parties[self.content_id]
 class ContentModal(discord.ui.Modal):
