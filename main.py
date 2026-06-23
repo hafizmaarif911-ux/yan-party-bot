@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 
 from database import (
     init_db,
+    save_content,
+    save_attendance,
     get_history,
     get_stats,
     get_top_attendance
@@ -138,7 +140,12 @@ class PartyView(discord.ui.View):
             label="Massing",
             style=discord.ButtonStyle.success
         )
-
+        
+        finish = discord.ui.Button(
+            label="Finish",
+            style=discord.ButtonStyle.success
+        )
+        
         cancel = discord.ui.Button(
             label="Cancel",
             style=discord.ButtonStyle.danger
@@ -175,6 +182,18 @@ class PartyView(discord.ui.View):
                     "Hanya leader.",
                     ephemeral=True
                 )
+        async def finish_callback(interaction):
+            
+            if interaction.user.id != data["leader"]:
+                return await interaction.response.send_message(
+            "Hanya leader yang bisa finish content.",
+            ephemeral=True
+                )
+
+    await interaction.response.send_modal(
+        FinishModal(content_id)
+    )
+	finish.callback = finish_callback
 
             mentions = []
 
@@ -224,7 +243,113 @@ class PartyView(discord.ui.View):
 # =====================================
 # MODAL
 # =====================================
+class FinishModal(discord.ui.Modal):
 
+    def __init__(self, content_id):
+
+        super().__init__(title="Finish Content")
+
+        self.content_id = content_id
+
+        self.silver_bag = discord.ui.TextInput(
+            label="Silver Bag Value",
+            placeholder="5000000"
+        )
+
+        self.item_value = discord.ui.TextInput(
+            label="Item Value",
+            placeholder="2500000"
+        )
+
+        self.add_item(self.silver_bag)
+        self.add_item(self.item_value)
+
+    async def on_submit(self, interaction):
+
+        data = parties[self.content_id]
+
+        silver_bag = int(self.silver_bag.value)
+        item_value = int(self.item_value.value)
+
+        total_loot = silver_bag + item_value
+
+        members = []
+
+        for role in data["roles"]:
+
+            user_id = data["members"][role]
+
+            if user_id:
+                members.append(user_id)
+
+        total_members = len(members)
+
+        split_value = (
+            total_loot // total_members
+            if total_members > 0
+            else 0
+        )
+
+        content_db_id = await save_content(
+            data["name"],
+            interaction.user.name,
+            data["leader"],
+            total_members,
+            silver_bag,
+            item_value,
+            total_loot,
+            split_value
+        )
+
+        for role in data["roles"]:
+
+            user_id = data["members"][role]
+
+            if user_id:
+
+                user = await bot.fetch_user(user_id)
+
+                await save_attendance(
+                    content_db_id,
+                    user_id,
+                    user.name,
+                    role
+                )
+
+        embed = discord.Embed(
+            title="✅ Content Finished",
+            color=0x2ECC71
+        )
+
+        embed.add_field(
+            name="Silver Bag",
+            value=f"{silver_bag:,}",
+            inline=False
+        )
+
+        embed.add_field(
+            name="Item Value",
+            value=f"{item_value:,}",
+            inline=False
+        )
+
+        embed.add_field(
+            name="Total Loot",
+            value=f"{total_loot:,}",
+            inline=False
+        )
+
+        embed.add_field(
+            name="Split Per Member",
+            value=f"{split_value:,}",
+            inline=False
+        )
+
+        await interaction.response.send_message(
+            embed=embed
+        )
+
+        del parties[self.content_id]
 class ContentModal(discord.ui.Modal):
 
     def __init__(self):
