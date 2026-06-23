@@ -15,6 +15,9 @@ from database import (
 load_dotenv()
 
 TOKEN = os.getenv("TOKEN")
+ALLOWED_CHANNELS = [
+    1440319464800391310,  # bot command PASTER
+]
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -25,7 +28,8 @@ bot = commands.Bot(
 )
 
 parties = {}
-
+def channel_allowed(interaction):
+    return interaction.channel.id in ALLOWED_CHANNELS
 # =====================================
 # EMBED
 # =====================================
@@ -515,6 +519,12 @@ class ContentModal(discord.ui.Modal):
 )
 async def content(interaction: discord.Interaction):
 
+    if not channel_allowed(interaction):
+        return await interaction.response.send_message(
+            "❌ Command ini hanya dapat digunakan di channel content yang ditentukan.",
+            ephemeral=True
+        )
+
     await interaction.response.send_modal(
         ContentModal()
     )
@@ -535,7 +545,11 @@ async def ping(interaction: discord.Interaction):
     description="Lihat history content"
 )
 async def history(interaction: discord.Interaction):
-
+if not channel_allowed(interaction):
+    return await interaction.response.send_message(
+        "❌ Gunakan command ini di channel content.",
+        ephemeral=True
+    )
     rows = await get_history()
 
     if not rows:
@@ -569,7 +583,11 @@ async def history(interaction: discord.Interaction):
     description="Guild Stats"
 )
 async def stats(interaction: discord.Interaction):
-
+if not channel_allowed(interaction):
+    return await interaction.response.send_message(
+        "❌ Gunakan command ini di channel content.",
+        ephemeral=True
+    )
     data = await get_stats()
 
     total_content = data[0]
