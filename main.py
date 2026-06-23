@@ -34,7 +34,7 @@ def build_embed(content_id):
     data = parties[content_id]
 
     embed = discord.Embed(
-        title=f"⚔️ {data['name']}"
+        title=f"⚔️ {data['name']}",
         color=0x5865F2
     )
 
@@ -60,11 +60,12 @@ def build_embed(content_id):
         f"Leader: <@{data['leader']}>\n"
         f"Status: {joined}/{len(data['roles'])}"
     )
-embed.set_footer(
-    text="Klik tombol untuk mengambil role"
-)
-    return embed
 
+    embed.set_footer(
+        text="Klik tombol untuk mengambil role"
+    )
+
+    return embed
 
 # =====================================
 # JOIN BUTTON
