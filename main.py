@@ -521,13 +521,13 @@ async def content(interaction: discord.Interaction):
 
 
 @bot.tree.command(
-    name="ping",
-    description="Ping bot"
+    name="sayhi",
+    description="Say hi to YPing"
 )
 async def ping(interaction: discord.Interaction):
 
     await interaction.response.send_message(
-        "🏹 HALLO SAYANG!"
+        "👋 Halo, sayang!"
     )
 
 @bot.tree.command(
