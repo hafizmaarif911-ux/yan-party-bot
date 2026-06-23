@@ -475,6 +475,72 @@ class ContentModal(discord.ui.Modal):
 
     async def on_submit(self, interaction):
 
+    try:
+
+        content_id = len(parties) + 1
+
+        role_list = [
+            role.strip()
+            for role in self.roles.value.splitlines()
+            if role.strip()
+        ]
+
+        parties[content_id] = {
+            "name": self.content_name.value,
+            "leader": interaction.user.id,
+            "thread_id": None,
+            "roles": role_list,
+            "members": {
+                role: None
+                for role in role_list
+            }
+        }
+
+        # Buat pesan content
+        msg = await interaction.channel.send(
+            embed=build_embed(content_id),
+            view=PartyView(content_id)
+        )
+
+        # Coba buat thread
+        try:
+
+            thread = await msg.create_thread(
+                name=self.content_name.value
+            )
+
+            parties[content_id]["thread_id"] = thread.id
+
+            await interaction.response.send_message(
+                f"✅ Content dibuat: {thread.mention}",
+                ephemeral=True
+            )
+
+        except discord.Forbidden:
+
+            await interaction.response.send_message(
+                "⚠️ Content berhasil dibuat, tetapi bot tidak memiliki izin membuat thread.",
+                ephemeral=True
+            )
+
+        except Exception as e:
+
+            print(f"THREAD ERROR: {e}")
+
+            await interaction.response.send_message(
+                "⚠️ Content berhasil dibuat, tetapi thread gagal dibuat.",
+                ephemeral=True
+            )
+
+    except Exception as e:
+
+        print(f"CONTENT ERROR: {e}")
+
+        await interaction.response.send_message(
+            f"❌ Error: {e}",
+            ephemeral=True
+        )
+
         content_id = len(parties) + 1
 
         role_list = [
