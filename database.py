@@ -153,4 +153,3 @@ async def get_top_attendance(limit=10):
         """, (limit,))
 
         return await cursor.fetchall()
-:::
