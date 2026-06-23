@@ -136,9 +136,9 @@ async with aiosqlite.connect(DB_NAME) as db:
     cursor = await db.execute("""
     SELECT
         COUNT(*),
-        COALESCE(SUM(total_loot),0),
-        COALESCE(SUM(silver_bag),0),
-        COALESCE(SUM(item_value),0)
+        COALESCE(SUM(total_loot), 0),
+        COALESCE(SUM(silver_bag), 0),
+        COALESCE(SUM(item_value), 0)
     FROM contents
     """)
 
