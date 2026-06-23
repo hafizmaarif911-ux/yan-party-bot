@@ -545,11 +545,13 @@ async def ping(interaction: discord.Interaction):
     description="Lihat history content"
 )
 async def history(interaction: discord.Interaction):
-if not channel_allowed(interaction):
-    return await interaction.response.send_message(
-        "❌ Gunakan command ini di channel content.",
-        ephemeral=True
-    )
+
+    if not channel_allowed(interaction):
+        return await interaction.response.send_message(
+            "❌ Gunakan command ini di channel content.",
+            ephemeral=True
+        )
+
     rows = await get_history()
 
     if not rows:
@@ -583,11 +585,13 @@ if not channel_allowed(interaction):
     description="Guild Stats"
 )
 async def stats(interaction: discord.Interaction):
-if not channel_allowed(interaction):
-    return await interaction.response.send_message(
-        "❌ Gunakan command ini di channel content.",
-        ephemeral=True
-    )
+
+    if not channel_allowed(interaction):
+        return await interaction.response.send_message(
+            "❌ Gunakan command ini di channel content.",
+            ephemeral=True
+        )
+
     data = await get_stats()
 
     total_content = data[0]
