@@ -473,7 +473,7 @@ class ContentModal(discord.ui.Modal):
         self.add_item(self.content_name)
         self.add_item(self.roles)
 
-    async def on_submit(self, interaction):
+async def on_submit(self, interaction):
 
     try:
 
