@@ -34,7 +34,7 @@ def build_embed(content_id):
     data = parties[content_id]
 
     embed = discord.Embed(
-        title=f"📢 {data['name']}",
+        title=f"⚔️ {data['name']}"
         color=0x5865F2
     )
 
@@ -60,7 +60,9 @@ def build_embed(content_id):
         f"Leader: <@{data['leader']}>\n"
         f"Status: {joined}/{len(data['roles'])}"
     )
-
+embed.set_footer(
+    text="Klik tombol untuk mengambil role"
+)
     return embed
 
 
@@ -116,8 +118,15 @@ class JoinButton(discord.ui.Button):
             view=PartyView(self.content_id)
         )
 
-        # kirim DM ke yang join
+thread = interaction.guild.get_thread(
+    data["thread_id"]
+)
 
+if thread:
+
+    await thread.send(
+        f"✅ <@{user_id}> mengambil role **{self.role_name}**"
+    )
         await interaction.response.send_message(
             f"✅ Masuk ke {self.role_name}",
             ephemeral=True
@@ -180,7 +189,15 @@ class PartyView(discord.ui.View):
                 embed=build_embed(content_id),
                 view=PartyView(content_id)
             )
+thread = interaction.guild.get_thread(
+    data["thread_id"]
+)
 
+if thread:
+
+    await thread.send(
+        f"❌ <@{user_id}> keluar dari party"
+    )
             await interaction.response.send_message(
                 "Keluar dari party.",
                 ephemeral=True
@@ -216,7 +233,12 @@ class PartyView(discord.ui.View):
                 + "\n\nSilakan login dan bersiap!"
             )
 
-            await interaction.channel.send(message)
+thread = interaction.guild.get_thread(
+    data["thread_id"]
+)
+
+if thread:
+    await thread.send(message)
 
             await interaction.response.send_message(
                 "Massing berhasil dikirim.",
@@ -422,19 +444,31 @@ class ContentModal(discord.ui.Modal):
         ]
 
         parties[content_id] = {
-            "name": self.content_name.value,
-            "leader": interaction.user.id,
-            "roles": role_list,
-            "members": {
-                role: None
-                for role in role_list
-            }
-        }
+    "name": self.content_name.value,
+    "leader": interaction.user.id,
+    "thread_id": None,
+    "roles": role_list,
+    "members": {
+        role: None
+        for role in role_list
+    }
+}
 
-        await interaction.response.send_message(
-            embed=build_embed(content_id),
-            view=PartyView(content_id)
-        )
+        amsg = await interaction.channel.send(
+    embed=build_embed(content_id),
+    view=PartyView(content_id)
+)
+
+thread = await msg.create_thread(
+    name=f"{self.content_name.value}"
+)
+
+parties[content_id]["thread_id"] = thread.id
+
+await interaction.response.send_message(
+    f"✅ Content dibuat: {thread.mention}",
+    ephemeral=True
+)
 
 
 # =====================================
@@ -559,6 +593,22 @@ async def stats(interaction: discord.Interaction):
 
     await interaction.response.send_message(
         embed=embed
+    )
+thread = interaction.guild.get_thread(
+    data["thread_id"]
+)
+
+if thread:
+
+    await thread.send(
+        f"""
+✅ CONTENT FINISHED
+
+💰 Silver Bag : {silver_bag:,}
+📦 Item Value : {item_value:,}
+💎 Total Loot : {total_loot:,}
+👥 Split : {split_value:,}
+"""
     )
 # =====================================
 # READY
