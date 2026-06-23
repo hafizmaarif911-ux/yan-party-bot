@@ -16,7 +16,7 @@ load_dotenv()
 
 TOKEN = os.getenv("TOKEN")
 ALLOWED_CHANNELS = [
-    1440319464800391310,  # bot command PASTER
+    1440319464800391310,
 ]
 
 intents = discord.Intents.default()
