@@ -241,10 +241,10 @@ async def cancel_callback(interaction):
 
 cancel.callback = cancel_callback
 
-        self.add_item(leave)
-        self.add_item(massing)
-		self.add_item(finish)
-        self.add_item(cancel)
+self.add_item(leave)
+self.add_item(massing)
+self.add_item(finish)
+self.add_item(cancel)
 		
 
 
