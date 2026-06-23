@@ -243,10 +243,13 @@ class PartyView(discord.ui.View):
                 if member:
                     mentions.append(f"<@{member}>")
 
-            message = (
-                f"📢 MASSING NOW!\n"
-                f"Caller: <@{data['leader']}>\n\n"
-                + "\n".join(mentions)
+           message = (
+    f"⚔️ **{data['name']}**\n\n"
+    f"📢 **MASSING NOW**\n"
+    f"Caller: <@{data['leader']}> memanggil\n\n"
+    f"{' '.join(mentions)}\n\n"
+    f"Gear up, mount up, let's move!"
+)
             )
 
             thread_id = data.get("thread_id")
@@ -526,7 +529,7 @@ async def content(interaction: discord.Interaction):
 async def ping(interaction: discord.Interaction):
 
     await interaction.response.send_message(
-        "🏹 YANTO GANTENG BANGET!"
+        "🏹 HALLO SAYANG!"
     )
 
 @bot.tree.command(
