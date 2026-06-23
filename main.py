@@ -243,10 +243,10 @@ class PartyView(discord.ui.View):
                 if member:
                     mentions.append(f"<@{member}>")
 
-           message = (
+message = (
     f"⚔️ **{data['name']}**\n\n"
     f"📢 **MASSING NOW**\n"
-    f"Caller: <@{data['leader']}> memanggil\n\n"
+    f"Caller: <@{data['leader']}> memanggil pasukan\n\n"
     f"{' '.join(mentions)}\n\n"
     f"Gear up, mount up, let's move!"
 )
