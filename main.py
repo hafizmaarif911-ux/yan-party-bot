@@ -449,42 +449,42 @@ class ContentModal(discord.ui.Modal):
         self.add_item(self.content_name)
         self.add_item(self.roles)
 
-   async def on_submit(self, interaction):
+    async def on_submit(self, interaction):
 
-    content_id = len(parties) + 1
+        content_id = len(parties) + 1
 
-    role_list = [
-        role.strip()
-        for role in self.roles.value.splitlines()
-        if role.strip()
-    ]
+        role_list = [
+            role.strip()
+            for role in self.roles.value.splitlines()
+            if role.strip()
+        ]
 
-    parties[content_id] = {
-        "name": self.content_name.value,
-        "leader": interaction.user.id,
-        "thread_id": None,
-        "roles": role_list,
-        "members": {
-            role: None
-            for role in role_list
+        parties[content_id] = {
+            "name": self.content_name.value,
+            "leader": interaction.user.id,
+            "thread_id": None,
+            "roles": role_list,
+            "members": {
+                role: None
+                for role in role_list
+            }
         }
-    }
 
-    msg = await interaction.channel.send(
-        embed=build_embed(content_id),
-        view=PartyView(content_id)
-    )
+        msg = await interaction.channel.send(
+            embed=build_embed(content_id),
+            view=PartyView(content_id)
+        )
 
-    thread = await msg.create_thread(
-        name=self.content_name.value
-    )
+        thread = await msg.create_thread(
+            name=self.content_name.value
+        )
 
-    parties[content_id]["thread_id"] = thread.id
+        parties[content_id]["thread_id"] = thread.id
 
-    await interaction.response.send_message(
-        f"✅ Content dibuat: {thread.mention}",
-        ephemeral=True
-    )
+        await interaction.response.send_message(
+            f"✅ Content dibuat: {thread.mention}",
+            ephemeral=True
+        )
 
 # =====================================
 # COMMAND
