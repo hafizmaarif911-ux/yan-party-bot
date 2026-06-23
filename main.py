@@ -423,7 +423,29 @@ class FinishModal(discord.ui.Modal):
         )
 
         await interaction.response.send_message(
-            embed=embed
+    embed=embed
+)
+
+thread_id = data.get("thread_id")
+
+if thread_id:
+
+    thread = interaction.guild.get_thread(thread_id)
+
+    if thread:
+
+        await thread.send(
+            f"""
+✅ CONTENT FINISHED
+
+💰 Silver Bag : {silver_bag:,}
+📦 Item Value : {item_value:,}
+💎 Total Loot : {total_loot:,}
+👥 Split : {split_value:,}
+"""
+        )
+
+del parties[self.content_id]
         )
 
         del parties[self.content_id]
@@ -609,22 +631,7 @@ async def stats(interaction: discord.Interaction):
     await interaction.response.send_message(
         embed=embed
     )
-thread = interaction.guild.get_thread(
-    data["thread_id"]
-)
 
-if thread:
-
-    await thread.send(
-        f"""
-✅ CONTENT FINISHED
-
-💰 Silver Bag : {silver_bag:,}
-📦 Item Value : {item_value:,}
-💎 Total Loot : {total_loot:,}
-👥 Split : {split_value:,}
-"""
-    )
 # =====================================
 # READY
 # =====================================
