@@ -80,10 +80,17 @@ class JoinButton(discord.ui.Button):
         self.content_id = content_id
         self.role_name = role_name
 
-    async def callback(self, interaction):
+async def callback(self, interaction):
 
-        data = parties[self.content_id]
-        user_id = interaction.user.id
+    if self.content_id not in parties:
+
+        return await interaction.response.send_message(
+            "Content sudah selesai atau dibatalkan.",
+            ephemeral=True
+        )
+
+    data = parties[self.content_id]
+    user_id = interaction.user.id
 
         # hapus role lama
 
