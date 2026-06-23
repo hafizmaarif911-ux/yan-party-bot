@@ -563,6 +563,10 @@ async def on_ready():
     synced = await bot.tree.sync()
 
     print(f"Synced {len(synced)} commands")
+
+    for cmd in synced:
+        print(cmd.name)
+
     print(f"Online : {bot.user}")
 
 
