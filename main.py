@@ -456,13 +456,13 @@ class ContentModal(discord.ui.Modal):
 
         self.content_name = discord.ui.TextInput(
             label="Nama Content",
-            placeholder="AVA NEW ROUTE"
+            placeholder="NAMA CONTEN"
         )
 
         self.roles = discord.ui.TextInput(
             label="Role",
             style=discord.TextStyle.paragraph,
-            placeholder="Main Tank\nHoly\nDPS 1\nDPS 2\nScout"
+            placeholder="Main Tank\nHealer\nDPS 1\nDPS 2\nScout"
         )
 
         self.add_item(self.content_name)
