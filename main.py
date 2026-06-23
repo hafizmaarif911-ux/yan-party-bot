@@ -300,8 +300,9 @@ class PartyModal(discord.ui.Modal):
 )
 async def party(interaction):
 
-    await interaction.response.send_modal(
-        PartyModal()
+    await interaction.response.send_message(
+        "Party command jalan!",
+        ephemeral=True
     )
 
 # ==========================================
