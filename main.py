@@ -250,19 +250,20 @@ message = (
     f"{' '.join(mentions)}\n\n"
     f"Gear up, mount up, let's move!"
 )
-            thread_id = data.get("thread_id")
 
-            if thread_id:
+thread_id = data.get("thread_id")
 
-                thread = interaction.guild.get_thread(thread_id)
+if thread_id:
 
-                if thread:
-                    await thread.send(message)
+    thread = interaction.guild.get_thread(thread_id)
 
-            await interaction.response.send_message(
-                "Massing berhasil dikirim.",
-                ephemeral=True
-            )
+    if thread:
+        await thread.send(message)
+
+await interaction.response.send_message(
+    "Massing berhasil dikirim.",
+    ephemeral=True
+)
 
         massing.callback = massing_callback
 
