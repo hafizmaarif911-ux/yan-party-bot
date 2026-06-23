@@ -23,12 +23,15 @@ bot = commands.Bot(
 async def on_ready():
     try:
         synced = await bot.tree.sync()
-        print(f"Synced {len(synced)} command(s)")
+        print(f"Synced {len(synced)} commands")
     except Exception as e:
-        print(f"Sync Error: {e}")
+        print(e)
 
     print(f"Online : {bot.user}")
-
+    
+@bot.tree.error
+async def on_app_command_error(interaction, error):
+    print(f"ERROR COMMAND: {error}")
 # ==========================
 # PING
 # ==========================
