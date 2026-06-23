@@ -80,44 +80,57 @@ class JoinButton(discord.ui.Button):
         self.content_id = content_id
         self.role_name = role_name
 
-async def callback(self, interaction):
+    async def callback(self, interaction: discord.Interaction):
 
-    if self.content_id not in parties:
+        # content sudah selesai
+        if self.content_id not in parties:
 
-        return await interaction.response.send_message(
-            "Content sudah selesai atau dibatalkan.",
-            ephemeral=True
-        )
-
-    data = parties[self.content_id]
-    user_id = interaction.user.id
-
-        # hapus role lama
-
-        for role in data["roles"]:
-            if data["members"][role] == user_id:
-                data["members"][role] = None
-
-        # role sudah diisi
-
-        if data["members"][self.role_name]:
             return await interaction.response.send_message(
-                "Role sudah diisi.",
+                "❌ Content sudah selesai atau dibatalkan.",
                 ephemeral=True
             )
 
+        data = parties[self.content_id]
+        user_id = interaction.user.id
+
+        # hapus role lama user
+        for role in data["roles"]:
+
+            if data["members"][role] == user_id:
+                data["members"][role] = None
+
+        # role sudah diisi orang lain
+        if data["members"][self.role_name]:
+
+            return await interaction.response.send_message(
+                "❌ Role sudah diisi.",
+                ephemeral=True
+            )
+
+        # isi role
         data["members"][self.role_name] = user_id
 
+        # update embed
         await interaction.message.edit(
             embed=build_embed(self.content_id),
             view=PartyView(self.content_id)
         )
 
+        # kirim DM ke yang join
+        try:
+
+            await interaction.user.send(
+                f"✅ Kamu berhasil join role **{self.role_name}** pada content **{data['name']}**"
+            )
+
+        except:
+
+            pass
+
         await interaction.response.send_message(
-            f"Masuk ke {self.role_name}",
+            f"✅ Masuk ke {self.role_name}",
             ephemeral=True
         )
-
 
 # =====================================
 # VIEW
