@@ -226,47 +226,46 @@ class PartyView(discord.ui.View):
         # MASSING
         # =========================
 
-        async def massing_callback(interaction):
+async def massing_callback(interaction):
 
-            if interaction.user.id != data["leader"]:
-                return await interaction.response.send_message(
-                    "Hanya leader.",
-                    ephemeral=True
-                )
+    if interaction.user.id != data["leader"]:
+        return await interaction.response.send_message(
+            "Hanya leader.",
+            ephemeral=True
+        )
 
-            mentions = []
+    mentions = []
 
-            for role in data["roles"]:
+    for role in data["roles"]:
 
-                member = data["members"][role]
+        member = data["members"][role]
 
-                if member:
-                    mentions.append(f"<@{member}>")
+        if member:
+            mentions.append(f"<@{member}>")
 
-message = (
-    f"⚔️ **{data['name']}**\n\n"
-    f"📢 **MASSING NOW**\n"
-    f"Caller: <@{data['leader']}> memanggil pasukan\n\n"
-    f"{' '.join(mentions)}\n\n"
-    f"Gear up, mount up, let's move!"
-)
+    message = (
+        f"⚔️ **{data['name']}**\n\n"
+        f"📢 **MASSING NOW**\n"
+        f"Caller: <@{data['leader']}> memanggil pasukan\n\n"
+        f"{' '.join(mentions)}\n\n"
+        f"Gear up, mount up, let's move!"
+    )
 
-thread_id = data.get("thread_id")
+    thread_id = data.get("thread_id")
 
-if thread_id:
+    if thread_id:
 
-    thread = interaction.guild.get_thread(thread_id)
+        thread = interaction.guild.get_thread(thread_id)
 
-    if thread:
-        await thread.send(message)
+        if thread:
+            await thread.send(message)
 
-await interaction.response.send_message(
-    "Massing berhasil dikirim.",
-    ephemeral=True
-)
+    await interaction.response.send_message(
+        "Massing berhasil dikirim.",
+        ephemeral=True
+    )
 
-        massing.callback = massing_callback
-
+massing.callback = massing_callback
         # =========================
         # FINISH
         # =========================
