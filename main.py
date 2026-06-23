@@ -85,7 +85,6 @@ class JoinButton(discord.ui.Button):
 
     async def callback(self, interaction: discord.Interaction):
 
-        # content sudah selesai
         if self.content_id not in parties:
 
             return await interaction.response.send_message(
@@ -96,13 +95,13 @@ class JoinButton(discord.ui.Button):
         data = parties[self.content_id]
         user_id = interaction.user.id
 
-        # hapus role lama user
+        # Hapus role lama user
         for role in data["roles"]:
 
             if data["members"][role] == user_id:
                 data["members"][role] = None
 
-        # role sudah diisi orang lain
+        # Role sudah diisi
         if data["members"][self.role_name]:
 
             return await interaction.response.send_message(
@@ -110,26 +109,31 @@ class JoinButton(discord.ui.Button):
                 ephemeral=True
             )
 
-        # isi role
+        # Isi role
         data["members"][self.role_name] = user_id
 
-        # update embed
+        # Update embed
         await interaction.message.edit(
             embed=build_embed(self.content_id),
             view=PartyView(self.content_id)
         )
 
-thread = interaction.guild.get_thread(
-    data["thread_id"]
-)
+        # Kirim notif ke thread
+        thread_id = data.get("thread_id")
 
-if thread:
+        if thread_id:
 
-    await thread.send(
-        f"✅ <@{user_id}> mengambil role **{self.role_name}**"
-    )
+            thread = interaction.guild.get_thread(thread_id)
+
+            if thread:
+
+                await thread.send(
+                    f"✅ <@{user_id}> mengambil role **{self.role_name}**"
+                )
+
+        # Notif hanya ke user
         await interaction.response.send_message(
-            f"✅ Masuk ke {self.role_name}",
+            f"✅ Berhasil mengambil role {self.role_name}",
             ephemeral=True
         )
 
