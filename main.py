@@ -142,41 +142,41 @@ class JoinButton(discord.ui.Button):
 # =====================================
 
 class PartyView(discord.ui.View):
-def __init__(self, content_id):
 
-    super().__init__(timeout=None)
+    def __init__(self, content_id):
 
-    self.content_id = content_id
+        super().__init__(timeout=None)
 
-    data = parties[content_id]
+        self.content_id = content_id
 
-    # ROLE BUTTONS
-    for role in data["roles"]:
-        self.add_item(
-            JoinButton(content_id, role)
+        data = parties[content_id]
+
+        # ROLE BUTTONS
+        for role in data["roles"]:
+            self.add_item(
+                JoinButton(content_id, role)
+            )
+
+        # CONTROL BUTTONS
+        leave = discord.ui.Button(
+            label="Leave",
+            style=discord.ButtonStyle.secondary
         )
 
-    # CONTROL BUTTONS
-    leave = discord.ui.Button(
-        label="Leave",
-        style=discord.ButtonStyle.secondary
-    )
+        massing = discord.ui.Button(
+            label="Massing",
+            style=discord.ButtonStyle.primary
+        )
 
-    massing = discord.ui.Button(
-        label="Massing",
-        style=discord.ButtonStyle.primary
-    )
+        finish = discord.ui.Button(
+            label="Finish",
+            style=discord.ButtonStyle.success
+        )
 
-    finish = discord.ui.Button(
-        label="Finish",
-        style=discord.ButtonStyle.success
-    )
-
-    cancel = discord.ui.Button(
-        label="Cancel",
-        style=discord.ButtonStyle.danger
-    )
-
+        cancel = discord.ui.Button(
+            label="Cancel",
+            style=discord.ButtonStyle.danger
+        )
     # =========================
     # LEAVE
     # =========================
