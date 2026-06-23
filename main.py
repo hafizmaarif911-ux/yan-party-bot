@@ -237,7 +237,9 @@ class PartyView(discord.ui.View):
 
         self.add_item(leave)
         self.add_item(massing)
+		self.add_item(finish)
         self.add_item(cancel)
+		
 
 
 # =====================================
